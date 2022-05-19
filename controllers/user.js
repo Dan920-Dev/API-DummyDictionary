@@ -30,16 +30,24 @@ exports.getUser = async (req, res, next) => {
 exports.createUser = async (req, res, next) => {
   try {
     //TODO: Requiere validation
-    let { username, name, lastName, email, password } = req.body;
-    let newUser = await UserModel.create({
-      username,
-      name,
-      email,
-      lastName,
-      password,
-    });
-    newUser.password = null;
-    res.send({ newUser });
+    let { username, name, lastName, email, password, rol } = req.body;
+
+    if (rol == "Admin" || rol == "User" || rol == "Rae"){
+      let newUser = await UserModel.create({
+        username,
+        name,
+        email,
+        lastName,
+        password,
+        rol,
+      });
+      newUser.password = null;
+      res.send({ newUser });
+    }else{
+      return res.status(401).send({
+        message: "Unauthorized.",
+      });
+    }
   } catch (err) {
     next(err);
   }
